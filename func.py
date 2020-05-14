@@ -58,14 +58,30 @@ def tf_init():
     from keras.backend.tensorflow_backend import set_session
     import tensorflow as tf
 
-    config = tf.ConfigProto()
+    config =  tf.compat.v1.ConfigProto()
     # dynamically grow the memory used on the GPU
-    config.gpu_options.allow_growth = True
+    # config.gpu_options.allow_growth = True
+    config.gpu_options.allow_growth = False
     # to log device placement (on which device the operation ran)
     config.log_device_placement = True
-    sess = tf.Session(config=config)
+
+    gpus = tf.config.experimental.list_physical_devices('GPU')
+    
+    if gpus:
+        try:
+            # Currently, memory growth needs to be the same across GPUs
+            for gpu in gpus:
+                tf.config.experimental.set_memory_growth(gpu, False)
+            logical_gpus = tf.config.experimental.list_logical_devices('GPU')
+            print(len(gpus), "Physical GPUs,", len(logical_gpus), "Logical GPUs")
+        except RuntimeError as e:
+            # Memory growth must be set before GPUs have been initialized
+            print(e)
+
+
+    sess =  tf.compat.v1.Session(config=config)
     # set this TensorFlow session as the default session for Keras
-    set_session(sess)
+    tf.compat.v1.keras.backend.set_session(sess)
 
 
 def im_show(img, img_name='img', max_size=1024):
@@ -86,6 +102,7 @@ def SSH_init():
     import caffe
     from utils.get_config import cfg, cfg_print, cfg_from_file
 
+    print("***************************************************")
     cfg_from_file('./lib/SSH/SSH/configs/wider_pyramid.yml')
     cfg_print(cfg)
 

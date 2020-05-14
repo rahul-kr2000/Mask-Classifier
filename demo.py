@@ -6,7 +6,6 @@ from lib.SSH.SSH.test import detect
 from func import im_show, SSH_init
 from deploy import classify
 
-
 def draw(img_path, bboxs, img=None, thresh=0.5, max_size=0):
     if img is None:
         img = cv2.imread(img_path)
@@ -104,7 +103,7 @@ def demo_from_dir(dir, net, save_out=False, out_dir=None):
             cv2.imwrite(out_dir + str(id).zfill(5) + '.jpg', img)
 
 
-def demo_video(net, video_path=0, save_out=False, out_path='./data/videos/output.avi', visualize=False):
+def demo_video(net, video_path=0, save_out=False, out_path='output.avi', visualize=False):
     cap = cv2.VideoCapture(video_path)
 
     if save_out:
@@ -137,10 +136,9 @@ def demo_video(net, video_path=0, save_out=False, out_path='./data/videos/output
                     scale = max_size / max(frame.shape[0], frame.shape[1])
                     frame = cv2.resize(frame, None, fx=scale, fy=scale)
 
-                cv2.imshow('frame', frame)
-
-                if cv2.waitKey(1) & 0xFF == ord('q'):
-                    break
+                #cv2.imshow('frame', frame)
+                #if cv2.waitKey(1) & 0xFF == ord('q'):
+                #    break
 
         if ret == False: break
 
@@ -153,7 +151,7 @@ def demo_video(net, video_path=0, save_out=False, out_path='./data/videos/output
 if __name__ == "__main__":
     net = SSH_init()
 
-    demo_video(net, visualize=True)
+    #demo_video(net, visualize=True)
     
     # uncomment below to run demo on video
-    # demo_video(net, './data/videos/demo3.MOV', save_out=True, visualize=True)
+    demo_video(net, 'input.mp4', save_out=True, visualize=True)
